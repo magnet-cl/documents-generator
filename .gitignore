@@ -1,0 +1,6 @@
+*.py[cod]
+
+*.csv
+
+# Installer logs
+pip-log.txt
