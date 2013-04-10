@@ -7,3 +7,4 @@ sudo apt-get install -y python-pip
 
 # docopt installation through pip
 sudo pip install docopt
+sudo pip install sh
