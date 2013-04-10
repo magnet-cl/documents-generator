@@ -5,7 +5,7 @@
 
 Usage:
     generate.py req <input.csv>
-    generate.py settlements <dir>
+    generate.py settlements <package.tar.gz>
     generate.py (-h | --help)
     generate.py --version
 
@@ -36,9 +36,9 @@ if __name__ == '__main__':
             print("{}: File not found.".format(input_file))
 
     elif arguments['settlements']:
-        settlements_dir = arguments['<dir>']
-        if exists(settlements_dir):
-            print("Processing directory: {}".format(settlements_dir))
-            settlements_generator(settlements_dir)
+        settlements_package = arguments['<package.tar.gz>']
+        if exists(settlements_package):
+            print("Processing compressed file: {}".format(settlements_package))
+            settlements_generator(settlements_package)
         else:
-            print("{}: Directory not found".format(settlements_dir))
+            print("{}: File not found".format(settlements_package))
