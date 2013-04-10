@@ -4,3 +4,8 @@
 
 # Installer logs
 pip-log.txt
+
+# Output files
+.tmp.md
+.tmp.tex
+*.pdf
