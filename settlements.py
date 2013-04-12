@@ -2,7 +2,7 @@
 
 """ Settlements generator. """
 
-from tarfile import open as tarfile_open
+from zipfile import ZipFile
 from os.path import exists
 from os import makedirs, listdir
 from os.path import splitext, join
@@ -14,7 +14,7 @@ def settlements_generator(settlements_package, tmp_folder='tmp',
                           output_folder='output'):
     """ Generates settlements. """
 
-    settlements = tarfile_open(settlements_package)
+    settlements = ZipFile(settlements_package)
     if not exists(tmp_folder):
         makedirs(tmp_folder)
     if not exists(output_folder):
