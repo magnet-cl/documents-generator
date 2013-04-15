@@ -6,6 +6,7 @@
 pip-log.txt
 
 # Output files
+tmp/*.md
 .tmp.md
 .tmp.tex
 *.pdf
