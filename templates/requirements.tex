@@ -2,6 +2,7 @@
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fancyhdr}
+\usepackage{graphicx}
 \ifxetex
   \usepackage{fontspec,xltxtra,xunicode}
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
@@ -89,14 +90,20 @@ $header-includes$
 $endfor$
 
 
-\title{MAGNET SPA \\ 
-  \small Documento de Especificación de Requisitos de Usuario}
-
+\title{Documento de Especificación de Requisitos de Usuario \\
+  \vspace{2cm}
+  \includegraphics[scale=1.5]{templates/img/logoMagnetBW}
+}
+  
 \date{}
 
 \begin{document}
 \maketitle
 \thispagestyle{empty}
+\newpage
+\renewcommand{\headrulewidth}{0.0pt}
+\pagestyle{fancy}
+\rfoot{\includegraphics[scale=0.7]{templates/img/logoMagnetBW}}
 
 $for(include-before)$
 $include-before$
