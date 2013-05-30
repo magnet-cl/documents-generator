@@ -8,13 +8,22 @@ from os.path import exists, join
 
 from pandoc import md_to_pdf_with_template
 
+f = open('templates/md/req/requirement_table.md', 'r')
+requirement_table_template = f.read()
+f.close()
+
+f = open('templates/md/req/introduction.md', 'r')
+introduction_template = f.read()
+f.close()
+
 
 def process_requirement(requirement, md_file):
     """  Process requirement into Markdown format. """
-
-    md_file.write('### Requerimiento ID: {}\n'.format(requirement['ID']))
-    md_file.write('* Nombre: {}\n'.format(requirement['Name/Title']))
-    md_file.write('* Descripción: {}\n'.format(requirement['Description']))
+    requirement_id = int(requirement['ID'])
+    if requirement_id % 100 == 0:
+        md_file.write('### {}\n'.format(requirement['Name/Title']))
+    else:
+        md_file.write(requirement_table_template.format(**requirement))
     md_file.write('\n')
 
 
@@ -30,12 +39,14 @@ def import_csv(input_file, md_file):
 def create_header(md_file):
     """ Creates the header document in Markdown format. """
 
-    project_title = raw_input('Project title: ')
-    md_file.write('# Proyecto {}\n'.format(project_title))
-    client_name = raw_input('Client name: ')
-    md_file.write('## Cliente: {}\n\n'.format(client_name))
+    context = {
+        'project_title': raw_input('Project title: '),
+        "client_name": raw_input('Client name: '),
+    }
 
-    return project_title
+    md_file.write(introduction_template.format(**context))
+
+    return context
 
 
 def tmp_cleanup():
@@ -48,7 +59,7 @@ def requirements_generator(input_file, output_folder='output'):
     # md output file
     with open('.tmp.md', 'w') as md_file:
         # header creation
-        project_title = create_header(md_file)
+        context = create_header(md_file)
 
         # import csv into md
         import_csv(input_file, md_file)
@@ -57,7 +68,7 @@ def requirements_generator(input_file, output_folder='output'):
     if not exists(output_folder):
         makedirs(output_folder)
     md_file = '.tmp.md'
-    pdf_file = '{}.pdf'.format(project_title)
+    pdf_file = '{}.pdf'.format(context['project_title'])
     pdf_file = join(output_folder, pdf_file)
     template = 'templates/requirements.tex'
     md_to_pdf_with_template(md_file, pdf_file, template)
