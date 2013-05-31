@@ -72,7 +72,8 @@ class RequirementsGenerator():
 
         week_day = start_date.weekday()
         if week_day == 5 or week_day == 6:
-            start_date = self.start_date + timedelta(days=7 - week_day)
+            delta = 7 - week_day
+            start_date = start_date + timedelta(days=delta)
         line.append(start_date.isoformat())
 
         self.accumulated_hours += hh
@@ -84,7 +85,8 @@ class RequirementsGenerator():
         end_date = self.start_date + timedelta(days=days)
         week_day = end_date.weekday()
         if week_day == 5 or week_day == 6:
-            end_date = self.end_date + timedelta(days=7 - week_day)
+            delta = 7 - week_day
+            end_date = end_date + timedelta(days=delta)
 
         line.append(end_date.isoformat())
 
