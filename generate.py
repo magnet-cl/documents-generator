@@ -19,7 +19,7 @@ Options:
 from docopt import docopt
 from os.path import exists
 
-from requirements import requirements_generator
+from requirements import RequirementsGenerator
 from settlements import settlements_generator
 
 
@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
         if exists(arguments['<input.csv>']):
             print("Processing file: {}".format(input_file))
-            requirements_generator(input_file)
+            requirements_generator = RequirementsGenerator()
+            requirements_generator.generate(input_file)
         else:
             print("{}: File not found.".format(input_file))
 

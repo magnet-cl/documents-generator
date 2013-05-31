@@ -9,5 +9,7 @@ El proyecto "{project_title}", tiene como finalidad el desarrollo de una platafo
 El software se construirá utilizando el lenguaje python y el framework "Django", el cual será montado sobre una máquina con sistema Linux.
 
 
-# 2. Requerimientos Funcionales
+# 2. Requerimientos
+
+## 2.1 Requerimientos Funcionales
 

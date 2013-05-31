@@ -10,3 +10,5 @@ tmp/*.md
 .tmp.md
 .tmp.tex
 *.pdf
+
+output/*
