@@ -5,6 +5,7 @@
 from csv import DictReader
 from os import remove, makedirs
 from os.path import exists, join
+from shutil import copy2
 
 from pandoc import md_to_pdf_with_template
 from datetime import date, datetime, timedelta
@@ -19,14 +20,6 @@ class RequirementsGenerator():
                 date(2013, 11, 01), date(2013, 12, 25))
 
     def __init__(self):
-        f = open('templates/md/req/requirement_table.md', 'r')
-        self.requirement_table_template = f.read()
-        f.close()
-
-        f = open('templates/md/req/introduction.md', 'r')
-        self.introduction_template = f.read()
-        f.close()
-
         self.initialize()
 
         self.context = {
@@ -34,6 +27,25 @@ class RequirementsGenerator():
             "client_name": "",
         }
         self.pdf_title = "Requerimientos"
+
+    def set_templates(self):
+        client_name = self.context['client_name']
+
+        template_folder = 'templates/md/req/%s/' % client_name
+        if not client_name or not exists(template_folder):
+            makedirs(template_folder)
+            source_folder = 'templates/md/req/%s'
+            copy2(source_folder % 'introduction.md', template_folder)
+            copy2(source_folder % 'requirement_table.md', template_folder)
+        template_folder += "%s"
+
+        f = open(template_folder % 'requirement_table.md', 'r')
+        self.requirement_table_template = f.read()
+        f.close()
+
+        f = open(template_folder % 'introduction.md', 'r')
+        self.introduction_template = f.read()
+        f.close()
 
     def initialize(self):
         self.current_group_name = ""
@@ -43,10 +55,15 @@ class RequirementsGenerator():
 
     def process_requirement(self, requirement, md_file):
         """  Process requirement into Markdown format. """
-        requirement_id = int(requirement['ID'])
+        try:
+            requirement_id = int(requirement['ID'])
+        except:
+            return
         if requirement_id == 0:
             self.context['client_name'] = requirement['Name/Title']
             self.context['project_title'] = requirement['Description']
+            self.set_templates()
+
             self.create_header(md_file)
             return
         if requirement_id % 100 == 0:
@@ -70,7 +87,10 @@ class RequirementsGenerator():
 
     def reformat_requirement(self, requirement, csv_file):
         """ Creates a new row, using the specified requirement dict """
-        requirement_id = int(requirement['ID'])
+        try:
+            requirement_id = int(requirement['ID'])
+        except:
+            return
         if requirement_id == 0:
             return
 
@@ -146,11 +166,14 @@ class RequirementsGenerator():
 
         remove('.tmp.md')
 
-    def generate(self, input_file, output_folder='output'):
+    def generate(self, input_file, output_folder=None):
         # md output file
         with open('.tmp.md', 'w') as md_file:
             # import csv into md
             self.import_csv(input_file, md_file)
+
+        if output_folder is None:
+            output_folder = 'output/%s' % self.context['client_name']
 
         # output to PDF
         if not exists(output_folder):
@@ -163,16 +186,16 @@ class RequirementsGenerator():
 
         # tmp files cleanup
         self.tmp_cleanup()
-        raw_date = raw_input('Start date (leave blank for today): ')
+        raw_date = raw_input('Start date (leave blank for today %d-%m-%Y): ')
         if raw_date:
-            self.start_date = datetime.strptime(raw_date, "%d%m%Y").date()
+            self.start_date = datetime.strptime(raw_date, "%d-%m-%Y").date()
         else:
             self.start_date = date.today()
 
         csv_file_name = 'Requerimientos_{}.csv'.format(
             self.context['client_name'])
         csv_file_name = join(output_folder, csv_file_name)
-        print csv_file_name
+
         with open(csv_file_name, 'w') as csv_file:
             # import csv into md
             self.reformat_csv(input_file, csv_file)
