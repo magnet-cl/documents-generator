@@ -10,6 +10,8 @@ from shutil import copy2
 from pandoc import md_to_pdf_with_template
 from datetime import date, datetime, timedelta
 
+import csv
+
 
 class RequirementsGenerator():
     colors = ["grey1", "blue2", "green1", "purple1", "red1", "orange1",
@@ -141,16 +143,20 @@ class RequirementsGenerator():
         line.append(end_date.isoformat())
 
         line.append(self.colors[self.color_index])
-        line.append("\n")
-        csv_file.write(",".join(line))
+
+        self.scv_writer.writerow(line)
 
     def reformat_csv(self, input_file, csv_file):
         """ Creates a new csv file to be imported to team_gantt """
 
         with open(input_file, 'rb') as input_csv_file:
             #write the first headers
-            csv_file.write(
-                'Group,Name/Title,Notes,Start Date,End Date,Color\n')
+            self.scv_writer = csv.writer(
+                csv_file, delimiter=',', quotechar='"',
+                quoting=csv.QUOTE_MINIMAL)
+
+            self.scv_writer.writerow(['Group', 'Name/Title', 'Notes',
+                                      'Start Date', 'End Date', 'Color'])
 
             content = DictReader(input_csv_file, delimiter=',')
             for requirement in content:
@@ -196,6 +202,6 @@ class RequirementsGenerator():
             self.context['client_name'])
         csv_file_name = join(output_folder, csv_file_name)
 
-        with open(csv_file_name, 'w') as csv_file:
+        with open(csv_file_name, 'wb') as csv_file:
             # import csv into md
             self.reformat_csv(input_file, csv_file)
