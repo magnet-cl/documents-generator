@@ -54,7 +54,7 @@ if __name__ == '__main__':
             print("{}: File not found.".format(input_csv))
             exit()
 
-        requirements_generator = RequirementsGenerator()
+        requirements_generator = RequirementsGenerator(client_name=client_name)
         requirements_generator.generate(input_file)
 
     elif arguments['settlements']:

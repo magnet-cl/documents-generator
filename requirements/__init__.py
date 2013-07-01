@@ -21,12 +21,11 @@ class RequirementsGenerator():
                 date(2013, 9, 19), date(2013, 9, 20), date(2013, 10, 31),
                 date(2013, 11, 01), date(2013, 12, 25))
 
-    def __init__(self):
+    def __init__(self, client_name):
         self.initialize()
 
         self.context = {
-            "project_title": "",
-            "client_name": "",
+            "client_name": client_name,
         }
         self.pdf_title = "Requerimientos"
 
@@ -61,18 +60,17 @@ class RequirementsGenerator():
             requirement_id = int(requirement['ID'])
         except:
             return
-        if requirement_id == 0:
-            self.context['client_name'] = requirement['Name/Title']
-            self.context['project_title'] = requirement['Description']
-            self.set_templates()
 
-            self.create_header(md_file)
+        description = requirement['Description']
+        if not description:
             return
+
         if requirement_id % 100 == 0:
+
             if requirement_id == 1000:
                 md_file.write('## 2.2 Requerimientos no funcionales\n')
             md_file.write('### {}\n'.format(requirement['Name/Title']))
-            md_file.write('%s\n' % requirement['Description'])
+            md_file.write('%s\n' % description)
         else:
             md_file.write(
                 self.requirement_table_template.format(**requirement))
@@ -84,6 +82,10 @@ class RequirementsGenerator():
 
         with open(input_file, 'rb') as csv_file:
             content = DictReader(csv_file, delimiter=',')
+
+            self.set_templates()
+            self.create_header(md_file)
+
             for requirement in content:
                 self.process_requirement(requirement, md_file)
 
@@ -96,6 +98,10 @@ class RequirementsGenerator():
         if requirement_id == 0:
             return
 
+        description = requirement['Description']
+        if not description:
+            return
+
         if requirement_id % 100 == 0:
             self.current_group_name = requirement['Name/Title']
             self.color_index += 1
@@ -103,7 +109,7 @@ class RequirementsGenerator():
             return
 
         line = [self.current_group_name, requirement['Name/Title'],
-                '"%s"' % requirement['Description']]
+                '"%s"' % description]
 
         hh = int(requirement['HH'])
 
