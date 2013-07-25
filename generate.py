@@ -4,7 +4,7 @@
 """Magnet documents generator.
 
 Usage:
-    generate.py req <client_name> [<input.csv>]
+    generate.py req <client_name> <project_name> [<input.csv>]
     generate.py settlements <package.tar.gz>
     generate.py (-h | --help)
     generate.py --version
@@ -18,10 +18,10 @@ Options:
 
 from docopt import docopt
 from os.path import exists
-from os import makedirs
 from sys import exit
 
-from requirements import RequirementsGenerator
+from requirements.generator import RequirementsGenerator
+from requirements import utils
 from settlements import settlements_generator
 
 import shutil
@@ -31,10 +31,14 @@ if __name__ == '__main__':
 
     if arguments['req']:
         client_name = arguments['<client_name>']
-        client_folder = 'clients/%s' % client_name
+        project_name = arguments['<project_name>']
 
-        if not exists(client_folder):
-            makedirs(client_folder)
+        context = {
+            "client_name": client_name,
+            "project_name": project_name,
+        }
+
+        client_folder = utils.project_path(context)
 
         input_csv = arguments['<input.csv>']
         input_file = "%s/input.csv" % client_folder
@@ -54,7 +58,7 @@ if __name__ == '__main__':
             print("{}: File not found.".format(input_csv))
             exit()
 
-        requirements_generator = RequirementsGenerator(client_name=client_name)
+        requirements_generator = RequirementsGenerator(context)
         requirements_generator.generate(input_file)
 
     elif arguments['settlements']:
