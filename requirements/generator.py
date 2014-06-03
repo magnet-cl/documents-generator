@@ -19,9 +19,9 @@ class RequirementsGenerator():
     colors = ["grey1", "blue2", "green1", "purple1", "red1", "orange1",
               "blue1", "yellow1"]
 
-    holidays = (date(2013, 07, 16), date(2013, 8, 15), date(2013, 9, 18),
-                date(2013, 9, 19), date(2013, 9, 20), date(2013, 10, 31),
-                date(2013, 11, 01), date(2013, 12, 25))
+    holidays = (date(2014, 07, 16), date(2014, 8, 15), date(2014, 9, 18),
+                date(2014, 9, 19), date(2014, 9, 20), date(2014, 10, 31),
+                date(2014, 11, 01), date(2014, 12, 25))
 
     def __init__(self, context):
         self.initialize()
