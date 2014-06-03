@@ -40,6 +40,7 @@ class RequirementsGenerator():
             source_folder = 'templates/md/req/%s'
             copy2(source_folder % 'introduction.md', template_folder)
             copy2(source_folder % 'requirement_table.md', template_folder)
+            copy2(source_folder % 'non_functional_title.md', template_folder)
 
         template_folder += "%s"
 
@@ -49,6 +50,10 @@ class RequirementsGenerator():
 
         f = open(template_folder % 'introduction.md', 'r')
         self.introduction_template = f.read()
+        f.close()
+
+        f = open(template_folder % 'non_functional_title.md', 'r')
+        self.non_functional_title_template = f.read()
         f.close()
 
     def initialize(self):
@@ -69,9 +74,10 @@ class RequirementsGenerator():
             return
 
         if requirement_id % 100 == 0:
-
             if requirement_id == 1000:
-                md_file.write('## 2.2 Requerimientos no funcionales\n')
+                md_file.write(self.non_functional_title_template.format(
+                    **self.context
+                ))
             md_file.write('### {}\n'.format(requirement['Name/Title']))
             md_file.write('%s\n' % description)
         else:
