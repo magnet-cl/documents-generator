@@ -59,7 +59,9 @@ if __name__ == '__main__':
             exit()
 
         requirements_generator = RequirementsGenerator(context)
-        requirements_generator.generate(input_file)
+
+        requirements_generator.generate_gantt(input_file)
+        requirements_generator.generate_requirements(input_file)
 
     elif arguments['settlements']:
         settlements_package = arguments['<package.tar.gz>']

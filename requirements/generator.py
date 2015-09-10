@@ -6,7 +6,6 @@ from csv import DictReader
 from os import remove, makedirs
 from os.path import exists, join
 from shutil import copy2
-
 from datetime import date, datetime, timedelta
 from pandoc import md_to_pdf_with_template
 from requirements.config import RequirementsConfigParser
@@ -169,7 +168,7 @@ class RequirementsGenerator():
         """ Creates a new csv file to be imported to team_gantt """
 
         with open(input_file, 'rb') as input_csv_file:
-            #write the first headers
+            # write the first headers
             self.scv_writer = csv.writer(
                 csv_file, delimiter=',', quotechar='"',
                 quoting=csv.QUOTE_MINIMAL)
@@ -191,7 +190,7 @@ class RequirementsGenerator():
 
         remove('.tmp.md')
 
-    def generate(self, input_file):
+    def generate_requirements(self, input_file):
         # md output file
         with open('.tmp.md', 'w') as md_file:
             # import csv into md
@@ -209,6 +208,12 @@ class RequirementsGenerator():
         pdf_file = join(output_folder, pdf_file)
         template = 'templates/requirements.tex'
         md_to_pdf_with_template(md_file, pdf_file, template)
+
+        # tmp files cleanup
+        self.tmp_cleanup()
+
+    def generate_gantt(self, input_file):
+        output_folder = '%s/output' % utils.project_path(self.context)
 
         # tmp files cleanup
         self.tmp_cleanup()
